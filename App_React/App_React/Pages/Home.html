@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="../Scripts/ajaxCall.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="../Scripts/data.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            margin: auto;
+            font-size: 25px;
+            border-collapse: collapse;
+            width: 30%;
+            text-align: center;
+        }
+
+        #td {
+            color: lightgreen;
+        }
+
+        button {
+            background-color: lightgreen;
+            height: 30px;
+            width: 70px;
+            font-size: 20px;
+            margin-left: 45%;
+        }
+        img {
+            max-width:290px;
+            max-height:190px;
+        }
+        #cardId{
+            margin:10px;
+        }
+        #cardRow{
+            margin:10px;
+        }
+        #selectTag{
+            margin-left:5px;
+        }
+    </style>
+    <script>
+        const Matrix = [[1, 6, 12, 3], [6, 3, 15], [7, 6, 12, 1], [1, 12, 6, 5], [6, 12], [3, 4, 12]];
+        const User = [1, 6, 12];
+        $(document).ready(function () {
+
+            PrintMatrix();
+        });
+
+        function PrintMatrix() {
+            str =`<div id="selectTag"><label>Select User : </label>
+                <select name="users" id="users">
+                    <option value="0">User 1</option>
+                    <option value="1">User 2</option>
+                    <option value="2">User 3</option>
+                    <option value="3">User 4</option>
+                    <option value="4">User 5</option>
+                    <option value="5">User 6</option>
+                </select ></div></br ><table>`;
+           
+            for (var i = 0; i < Matrix.length; i++) {
+                str += ' <tr><td id="td">User ' + (i + 1) + '</td>';
+                for (var j = 0; j < Matrix[i].length; j++) {
+                    str += `<td style="width:32px; height:32px;">${Matrix[i][j]}</td>`;
+                }
+                str += ' </tr>';
+            }
+
+            str += '</table></br><button onclick="Play()"> Play </button>'
+            document.getElementById("matrix").innerHTML = str;
+        }
+
+        function Play() {
+            var index = parseInt(document.getElementById("users").value);
+
+            arr = {
+                User: Matrix[index],
+                Matrix: Matrix
+            }
+            ajaxCall("Post", "../api/Recommendation", JSON.stringify(arr), postSuccessCB, postErrorCB);
+            return false;
+        }
+
+        function postSuccessCB(dataa) {
+            str = '<h1>No Recommendatins were Found!!<h1>';
+            if (dataa.length != 0) {
+                str = '<div class="row" id="cardRow">';
+                for (var i = 0; i < dataa.length; i++) {
+                    for (var j = 0; j < data.length; j++) {
+                        if (data[j].Id == dataa[i]) {
+                            str += `<div class="card" style="width: 18rem;" id="cardId">
+                                                <img class="card-img-top" src='${data[j].Img}' alt="Card image cap">
+                                                <div class="card-body">
+                                                <h5 class="card-title">${data[j].Id}_${data[j].Name}</h5>
+                                                </div>
+                                                </div>`;
+                        }
+                    }
+                }
+                document.getElementById("results").innerHTML = str+"</div>";
+            }
+            else { document.getElementById("results").innerHTML = str; }
+
+        }
+
+        function postErrorCB() {
+            alert("error");
+        }
+    </script>
+</head>
+<body>
+
+    <section style="background-color:lightgreen">
+        <h1 style="text-align:center">Recommendation Algorithm</h1>
+    </section>
+    <section style="align-content:center;" id="matrix">
+    </section>
+    <section id="results">
+    </section>
+</body>
+</html>
