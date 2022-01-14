@@ -163,7 +163,6 @@
     </Compile>
     <Compile Include="Models\Arr.cs" />
     <Compile Include="Models\Recommendations.cs" />
-    <Compile Include="Models\ResultObj.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
